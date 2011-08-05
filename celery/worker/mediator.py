@@ -65,8 +65,7 @@ class Mediator(threading.Thread):
             try:
                 self.move()
             except Exception, exc:
-                self.logger.error("Mediator crash: %r" % (exc, ),
-                    exc_info=sys.exc_info())
+                self.logger.error("Mediator crash: %r", exc, exc_info=True)
                 # exiting by normal means does not work here, so force exit.
                 os._exit(1)
         self._stopped.set()

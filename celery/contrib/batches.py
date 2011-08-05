@@ -163,7 +163,7 @@ class Batches(Task):
                     callbacks=acks_late[True] and [on_return] or [])
 
     def debug(self, msg):
-        self.logger.debug("%s: %s" % (self.name, msg))
+        self.logger.debug("%s: %s", self.name, msg)
 
     @cached_property
     def logger(self):

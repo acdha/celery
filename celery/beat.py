@@ -161,15 +161,15 @@ class Scheduler(object):
         is_due, next_time_to_run = entry.is_due()
 
         if is_due:
-            self.logger.debug("Scheduler: Sending due task %s" % entry.task)
+            self.logger.debug("Scheduler: Sending due task %s", entry.task)
             try:
                 result = self.apply_async(entry, publisher=publisher)
             except Exception, exc:
-                self.logger.error("Message Error: %s\n%s" % (exc,
-                    traceback.format_stack()), exc_info=sys.exc_info())
+                self.logger.error("Message Error: %s\n%s", exc,
+                                  traceback.format_stack(),
+                                  exc_info=sys.exc_info())
             else:
-                self.logger.debug("%s sent. id->%s" % (entry.task,
-                                                       result.task_id))
+                self.logger.debug("%s sent. id->%s", entry.task, result.task_id)
         return next_time_to_run
 
     def tick(self):
@@ -306,8 +306,8 @@ class PersistentScheduler(Scheduler):
                                                 writeback=True)
             entries = self._store.setdefault("entries", {})
         except Exception, exc:
-            self.logger.error("Removing corrupted schedule file %r: %r" % (
-                self.schedule_filename, exc))
+            self.logger.error("Removing corrupted schedule file %r: %r",
+                              self.schedule_filename, exc, exc_info=True)
             self._remove_db()
             self._store = self.persistence.open(self.schedule_filename,
                                                 writeback=True)

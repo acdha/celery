@@ -133,7 +133,7 @@ class WorkerTaskTrace(TaskTrace):
                 raise
             except Exception, exc:
                 logger = current_app.log.get_default_logger()
-                logger.error("Process cleanup failed: %r" % (exc, ),
+                logger.error("Process cleanup failed: %r", exc,
                              exc_info=sys.exc_info())
 
     def handle_success(self, retval, *args):
@@ -416,8 +416,8 @@ class TaskRequest(object):
         if self.expires:
             self.maybe_expire()
         if self.task_id in state.revoked:
-            self.logger.warn("Skipping revoked task: %s[%s]" % (
-                self.task_name, self.task_id))
+            self.logger.warn("Skipping revoked task: %s[%s]",
+                             self.task_name, self.task_id)
             self.send_event("task-revoked", uuid=self.task_id)
             self.acknowledge()
             self._already_revoked = True
@@ -436,8 +436,8 @@ class TaskRequest(object):
         if not self.task.acks_late:
             self.acknowledge()
         self.send_event("task-started", uuid=self.task_id, pid=pid)
-        self.logger.debug("Task accepted: %s[%s] pid:%r" % (
-            self.task_name, self.task_id, pid))
+        self.logger.debug("Task accepted: %s[%s] pid:%r",
+                          self.task_name, self.task_id, pid)
         if self._terminate_on_ack is not None:
             _, pool, signal = self._terminate_on_ack
             self.terminate(pool, signal)
@@ -446,12 +446,12 @@ class TaskRequest(object):
         """Handler called if the task times out."""
         state.task_ready(self)
         if soft:
-            self.logger.warning("Soft time limit exceeded for %s[%s]" % (
-                self.task_name, self.task_id))
+            self.logger.warning("Soft time limit exceeded for %s[%s]",
+                                self.task_name, self.task_id)
             exc = SoftTimeLimitExceeded()
         else:
-            self.logger.error("Hard time limit exceeded for %s[%s]" % (
-                self.task_name, self.task_id))
+            self.logger.error("Hard time limit exceeded for %s[%s]",
+                              self.task_name, self.task_id)
             exc = TimeLimitExceeded()
 
         if self._store_errors:

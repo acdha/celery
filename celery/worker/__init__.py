@@ -244,8 +244,8 @@ class WorkController(object):
 
         try:
             for i, component in enumerate(self.components):
-                self.logger.debug("Starting thread %s..." % (
-                                        component.__class__.__name__))
+                self.logger.debug("Starting thread %s...",
+                                  component.__class__.__name__)
                 self._running = i + 1
                 blocking(component.start)
         except SystemTerminate:
@@ -267,8 +267,9 @@ class WorkController(object):
             self.stop()
             raise exc
         except Exception, exc:
-            self.logger.critical("Internal error %s: %s\n%s" % (
-                            exc.__class__, exc, traceback.format_exc()))
+            self.logger.critical("Internal error %s: %s\n%s",
+                                 exc.__class__, exc, traceback.format_exc(),
+                                 exc_info=True)
 
     def stop(self, in_sighandler=False):
         """Graceful shutdown of the worker server."""
@@ -293,8 +294,8 @@ class WorkController(object):
         signals.worker_shutdown.send(sender=self)
 
         for component in reversed(self.components):
-            self.logger.debug("%s thread %s..." % (
-                    what, component.__class__.__name__))
+            self.logger.debug("%s thread %s...",
+                              what, component.__class__.__name__)
             stop = component.stop
             if not warm:
                 stop = getattr(component, "terminate", stop)
@@ -305,7 +306,7 @@ class WorkController(object):
 
     def on_timer_error(self, exc_info):
         _, exc, _ = exc_info
-        self.logger.error("Timer error: %r" % (exc, ))
+        self.logger.error("Timer error: %r", exc, exc_info=exc_info)
 
     def on_timer_tick(self, delay):
         self.timer_debug("Scheduler wake-up! Next eta %s secs." % delay)

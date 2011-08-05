@@ -157,11 +157,10 @@ class QoS(object):
         if pcount != self.prev:
             new_value = pcount
             if pcount > PREFETCH_COUNT_MAX:
-                self.logger.warning(
-                    "QoS: Disabled: prefetch_count exceeds %r" % (
-                        PREFETCH_COUNT_MAX, ))
+                self.logger.warning("QoS: Disabled: prefetch_count exceeds %r",
+                                    PREFETCH_COUNT_MAX)
                 new_value = 0
-            self.logger.debug("basic.qos: prefetch_count->%s" % new_value)
+            self.logger.debug("basic.qos: prefetch_count->%s", new_value)
             self.consumer.qos(prefetch_count=new_value)
             self.prev = pcount
         return pcount
@@ -306,7 +305,7 @@ class Consumer(object):
         if task.revoked():
             return
 
-        self.logger.info("Got task from broker: %s" % (task.shortinfo(), ))
+        self.logger.info("Got task from broker: %s", task.shortinfo())
 
         self.event_dispatcher.send("task-received", uuid=task.task_id,
                 name=task.task_name, args=safe_repr(task.args),
@@ -319,8 +318,8 @@ class Consumer(object):
                 eta = timer2.to_timestamp(task.eta)
             except OverflowError, exc:
                 self.logger.error(
-                    "Couldn't convert eta %s to timestamp: %r. Task: %r" % (
-                        task.eta, exc, task.info(safe=True)),
+                    "Couldn't convert eta %s to timestamp: %r. Task: %r",
+                    task.eta, exc, task.info(safe=True),
                     exc_info=sys.exc_info())
                 task.acknowledge()
             else:
@@ -335,11 +334,11 @@ class Consumer(object):
         try:
             self.pidbox_node.handle_message(body, message)
         except KeyError, exc:
-            self.logger.error("No such control command: %s" % exc)
+            self.logger.error("No such control command: %s", exc)
         except Exception, exc:
             self.logger.error(
-                "Error occurred while handling control command: %r\n%r" % (
-                    exc, traceback.format_exc()), exc_info=sys.exc_info())
+                "Error occurred while handling control command: %r\n%r",
+                    exc, traceback.format_exc(), exc_info=sys.exc_info())
             self.reset_pidbox_node()
 
     def apply_eta_task(self, task):
@@ -367,12 +366,13 @@ class Consumer(object):
                                                 hostname=self.hostname,
                                                 eventer=self.event_dispatcher)
             except NotRegistered, exc:
-                self.logger.error("Unknown task ignored: %r Body->%r" % (
-                        exc, safe_repr(body)), exc_info=sys.exc_info())
+                self.logger.error("Unknown task ignored: %r Body->%r",
+                                  exc, safe_repr(body), exc_info=sys.exc_info())
                 message.ack()
             except InvalidTaskError, exc:
-                self.logger.error("Invalid task ignored: %s: %s" % (
-                        str(exc), safe_repr(body)), exc_info=sys.exc_info())
+                self.logger.error("Invalid task ignored: %s: %s",
+                                  str(exc), safe_repr(body),
+                                  exc_info=sys.exc_info())
                 message.ack()
             else:
                 self.on_task(task)
@@ -438,9 +438,9 @@ class Consumer(object):
 
         """
         self.logger.critical(
-            "Can't decode message body: %r (type:%r encoding:%r raw:%r')" % (
+            "Can't decode message body: %r (type:%r encoding:%r raw:%r')",
                     exc, message.content_type, message.content_encoding,
-                    safe_repr(message.body)))
+                    safe_repr(message.body))
         message.ack()
 
     def reset_pidbox_node(self):
@@ -517,8 +517,8 @@ class Consumer(object):
 
         def _connection_error_handler(exc, interval):
             """Callback handler for connection errors."""
-            self.logger.error("Consumer: Connection Error: %s. " % exc
-                     + "Trying again in %d seconds..." % interval)
+            self.logger.error("Consumer: Connection Error: %s. "
+                              "Trying again in %d seconds...", exc, interval)
 
         conn = self.app.broker_connection()
         if not self.app.conf.BROKER_CONNECTION_RETRY:

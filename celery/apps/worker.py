@@ -282,8 +282,7 @@ def install_worker_int_handler(worker):
                 "celeryd: Hitting Ctrl+C again will terminate "
                 "all running tasks!")
             install_worker_int_again_handler(worker)
-            worker.logger.warn("celeryd: Warm shutdown (%s)" % (
-                process_name))
+            worker.logger.warn("celeryd: Warm shutdown (%s)", process_name)
             worker.stop(in_sighandler=True)
         raise SystemExit()
 
@@ -297,8 +296,7 @@ def install_worker_int_again_handler(worker):
         if multiprocessing:
             process_name = multiprocessing.current_process().name
         if not process_name or process_name == "MainProcess":
-            worker.logger.warn("celeryd: Cold shutdown (%s)" % (
-                process_name))
+            worker.logger.warn("celeryd: Cold shutdown (%s)", process_name)
             worker.terminate(in_sighandler=True)
         raise SystemTerminate()
 
@@ -312,8 +310,7 @@ def install_worker_term_handler(worker):
         if multiprocessing:
             process_name = multiprocessing.current_process().name
         if not process_name or process_name == "MainProcess":
-            worker.logger.warn("celeryd: Warm shutdown (%s)" % (
-                process_name))
+            worker.logger.warn("celeryd: Warm shutdown (%s)", process_name)
             worker.stop(in_sighandler=True)
         raise SystemExit()
 
@@ -324,8 +321,7 @@ def install_worker_restart_handler(worker):
 
     def restart_worker_sig_handler(signum, frame):
         """Signal handler restarting the current python program."""
-        worker.logger.warn("Restarting celeryd (%s)" % (
-            " ".join(sys.argv)))
+        worker.logger.warn("Restarting celeryd (%s)", " ".join(sys.argv))
         worker.stop(in_sighandler=True)
         os.execv(sys.executable, [sys.executable] + sys.argv)
 

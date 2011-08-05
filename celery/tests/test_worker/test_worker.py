@@ -107,16 +107,16 @@ class MockLogger(object):
         self.logged = []
 
     def critical(self, msg, *args, **kwargs):
-        self.logged.append(msg)
+        self.logged.append((msg, args, kwargs))
 
     def info(self, msg, *args, **kwargs):
-        self.logged.append(msg)
+        self.logged.append((msg, args, kwargs))
 
     def error(self, msg, *args, **kwargs):
-        self.logged.append(msg)
+        self.logged.append((msg, args, kwargs))
 
     def debug(self, msg, *args, **kwargs):
-        self.logged.append(msg)
+        self.logged.append((msg, args, kwargs))
 
 
 class MockBackend(object):
@@ -389,7 +389,7 @@ class test_Consumer(unittest.TestCase):
         l.pidbox_node = MockNode()
 
         l.receive_message(m.decode(), m)
-        self.assertIn("Invalid task ignored", logger.logged[0])
+        self.assertIn("Invalid task ignored", logger.logged[0][0])
 
     def test_on_decode_error(self):
         logger = MockLogger()
@@ -408,7 +408,7 @@ class test_Consumer(unittest.TestCase):
         message = MockMessage()
         l.on_decode_error(message, KeyError("foo"))
         self.assertTrue(message.acked)
-        self.assertIn("Can't decode message body", logger.logged[0])
+        self.assertIn("Can't decode message body", logger.logged[0][0])
 
     def test_receieve_message(self):
         l = MyKombuConsumer(self.ready_queue, self.eta_schedule, self.logger,
@@ -767,8 +767,8 @@ class test_WorkController(AppCase):
             exc_info = sys.exc_info()
 
         worker.on_timer_error(exc_info)
-        logged = worker.logger.logged[0]
-        self.assertIn("KeyError", logged)
+        msg, args, kwargs = worker.logger.logged[0]
+        self.assertIn("KeyError", msg % args)
 
     def test_on_timer_tick(self):
         worker = WorkController(concurrency=1, loglevel=10)
@@ -776,8 +776,8 @@ class test_WorkController(AppCase):
         worker.timer_debug = worker.logger.debug
 
         worker.on_timer_tick(30.0)
-        logged = worker.logger.logged[0]
-        self.assertIn("30.0", logged)
+        msg, args, kwargs = worker.logger.logged[0]
+        self.assertIn("30.0", msg % args)
 
     def test_process_task(self):
         worker = self.worker

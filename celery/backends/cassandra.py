@@ -106,7 +106,7 @@ class CassandraBackend(BaseDictBackend):
                         socket.error,
                         socket.timeout,
                         Thrift.TException), exc:
-                    self.logger.warn('Cassandra error: %s. Retrying...' % exc)
+                    self.logger.warn('Cassandra error: %s. Retrying...', exc)
                     if time.time() > ts:
                         raise
                     time.sleep(self._retry_wait)
@@ -183,4 +183,4 @@ class CassandraBackend(BaseDictBackend):
         for k in task_ids:
             cf.remove(k)
 
-        self.logger.debug('Cleaned %i expired results' % len(task_ids))
+        self.logger.debug('Cleaned %i expired results', len(task_ids))

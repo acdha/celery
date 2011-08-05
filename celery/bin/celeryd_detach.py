@@ -40,9 +40,9 @@ class detached(object):
                 from celery.log import setup_logger
                 logger = setup_logger(logfile=self.logfile,
                                       loglevel=logging.ERROR)
-                logger.critical("Can't exec %r" % (
-                    " ".join([self.path] + self.argv), ),
-                    exc_info=sys.exc_info())
+                logger.critical("Can't exec %r",
+                                " ".join([self.path] + self.argv),
+                                exc_info=sys.exc_info())
         finally:
             on_stop()
 
